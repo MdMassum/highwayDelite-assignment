@@ -19,13 +19,7 @@ const UserSchema = new mongoose.Schema({
   dob: {
     type: Date, 
     required: true 
-  },
-  otp: { 
-    type: String, 
-  },
-  otpExpires: { 
-    type: Date, 
-  },
+  }
   
 },{timestamps : true});
 

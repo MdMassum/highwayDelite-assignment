@@ -5,7 +5,7 @@ import cors from 'cors'
 import cookieParser from "cookie-parser";
 import connectDB from "./config/mongoConfig";
 import errorMiddleware from './middleware/error'
-
+import authRouter from '../src/routes/auth.route'
 
 
 import helmet from 'helmet';
@@ -60,7 +60,8 @@ app.get('/',(req:Request, res:Response)=>{
         "message":"server up and running"
     })
 })
-
+// auth routes -->
+app.use('/api/v1/auth', authRouter);
 
 app.use(errorMiddleware)  // error middleware
 
