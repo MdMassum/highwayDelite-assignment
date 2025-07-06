@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/mongoConfig";
 import errorMiddleware from './middleware/error'
 import authRouter from '../src/routes/auth.route'
+import noteRouter from '../src/routes/notes.route'
 
 
 import helmet from 'helmet';
@@ -62,6 +63,9 @@ app.get('/',(req:Request, res:Response)=>{
 })
 // auth routes -->
 app.use('/api/v1/auth', authRouter);
+
+// Note routes -->
+app.use('/api/v1/notes', noteRouter);
 
 app.use(errorMiddleware)  // error middleware
 

@@ -5,6 +5,7 @@ import {
   requestLoginOtp,
   verifyLoginOtp,
   logout,
+  myProfile,
 } from "../controllers/auth.controller";
 import authenticate from "../middleware/auth";
 
@@ -15,6 +16,8 @@ router.post("/verify-otp/signup", verifySignupOtp);
 
 router.post("/request-otp/login", requestLoginOtp);
 router.post("/verify-otp/login", verifyLoginOtp);
+
+router.post("/me",authenticate, myProfile)
 
 router.post("/logout", authenticate, logout);
 

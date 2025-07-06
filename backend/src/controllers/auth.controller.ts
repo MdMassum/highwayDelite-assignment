@@ -173,6 +173,33 @@ export const verifyLoginOtp = async (req: Request, res: Response, next:NextFunct
   }
 };
 
+// GET MY PROFILE
+export const myProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return next(new ErrorHandler("Unauthorized", 401));
+    }
+
+    const user = await User.findById(userId).select("-otp -otpExpires");
+
+    if (!user) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (err: any) {
+
+    console.error("MyProfile Error:", err);
+    return next(new ErrorHandler(err.message || "Internal Server Error", 500));
+  }
+};
+
+
 // LOGOUT -->
 export const logout = async (_req: Request, res: Response) => {
 

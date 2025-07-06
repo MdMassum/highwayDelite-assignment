@@ -2,7 +2,15 @@
 import mongoose from "mongoose";
 import validator from 'validator'
 
-const UserSchema = new mongoose.Schema({
+export interface IUser extends Document {
+  name: string;
+  email: string;
+  dob: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const UserSchema = new mongoose.Schema<IUser>({
 
   email: {
     type: String, 
@@ -23,4 +31,4 @@ const UserSchema = new mongoose.Schema({
   
 },{timestamps : true});
 
-export default mongoose.model("User", UserSchema);
+export default mongoose.model<IUser>("User", UserSchema);
