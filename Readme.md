@@ -195,7 +195,8 @@ Base URL: `/notes`  (All this routes are authenticated)
 
 ---
 
-## Frontend Deployed Link - `https://highway-delite-assignment.vercel.app/`
-## Backend Deployed Link - `https://highway-delite-assignment-backend.vercel.app/`
+### Frontend Deployed Link - `https://highway-delite-assignment.vercel.app/`
+### Backend Deployed Link - `https://highway-delite-assignment-backend.vercel.app/`
+### Postman Link - `https://www.postman.com/assignment-7873/highway-delite/collection/0hh7y53/notes?action=share&creator=35181588`
 
 ---

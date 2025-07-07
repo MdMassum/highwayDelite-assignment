@@ -63,8 +63,6 @@ const Login: React.FC = () => {
       toast.error("Email cannot be empty!!");
       return;
     }
-    setOtpSent(true);
-    setTimer(60);
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/request-otp/login`, {
@@ -76,6 +74,8 @@ const Login: React.FC = () => {
         return;
       }
       console.log("Otp Sent Success:", response.data);
+      setOtpSent(true);
+      setTimer(60);
       toast.success("Otp Sent Successfully");
 
     } catch (err:any) {
