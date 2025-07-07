@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import bgImg from '../../assets/bgImg.jpg';
-import logo from '../../assets/icon.png';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { signInFailure, signInStart, signInSuccess } from '../../redux/authSlice';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import bgImg from "../../assets/bgImg.jpg";
+import logo from "../../assets/icon.png";
+import Button from "../../components/Button";
+import Input from "../../components/Input";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../../redux/authSlice";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Login: React.FC = () => {
-
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [timer, setTimer] = useState(0);
 
@@ -22,9 +25,8 @@ const Login: React.FC = () => {
   const dispatch = useDispatch();
 
   // verify otp and login
-  const handleLogin = async() => {
-    
-    if(!email || !otp){
+  const handleLogin = async () => {
+    if (!email || !otp) {
       toast.error("Email or Otp cannote be empty!!");
       return;
     }
@@ -32,44 +34,50 @@ const Login: React.FC = () => {
     try {
       dispatch(signInStart());
 
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/verify-otp/login`, {
-        email,
-        otp,
-      },{withCredentials:true});
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/auth/verify-otp/login`,
+        {
+          email,
+          otp,
+        },
+        { withCredentials: true }
+      );
 
-      if(response.data.success === false){
+      if (response.data.success === false) {
         dispatch(signInFailure(response.data.message));
         toast.error(response.data.message);
         return;
       }
-      dispatch(signInSuccess(response.data.user))
+      dispatch(signInSuccess(response.data.user));
       console.log("Login Success:", response.data);
       toast.success("Login Success");
-      navigate('/home')
-
-    } catch (err:any) {
+      navigate("/home");
+    } catch (err: any) {
       console.error("Login Error:", err.response?.data || err.message);
       toast.error(err.response?.data?.message || "An error occurred");
-      dispatch(signInFailure(err.response?.data?.message))
+      dispatch(signInFailure(err.response?.data?.message));
     } finally {
       setLoading(false);
     }
   };
 
   // send otp
-  const handleSendOtp = async() => {
-
-    if(!email){
+  const handleSendOtp = async () => {
+    if (!email) {
       toast.error("Email cannot be empty!!");
       return;
     }
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/request-otp/login`, {
-        email,
-      },{withCredentials:true});
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/auth/request-otp/login`,
+        {
+          email,
+        },
+        { withCredentials: true }
+      );
 
-      if(response.data.success === false){
+      if (response.data.success === false) {
         toast.error(response.data.message);
         return;
       }
@@ -77,11 +85,9 @@ const Login: React.FC = () => {
       setOtpSent(true);
       setTimer(60);
       toast.success("Otp Sent Successfully");
-
-    } catch (err:any) {
+    } catch (err: any) {
       console.error("Login Error:", err.response?.data || err.message);
       toast.error(err.response?.data?.message || "An error occurred");
-
     } finally {
       setLoading(false);
     }
@@ -105,7 +111,9 @@ const Login: React.FC = () => {
           <p className="font-semibold text-lg">HD</p>
         </div>
         <div className="w-full max-w-full justify-center items-center px-6 md:px-20">
-          <h1 className="text-3xl font-bold mb-2 text-center md:text-left">Sign in</h1>
+          <h1 className="text-3xl font-bold mb-2 text-center md:text-left">
+            Sign in
+          </h1>
           <p className="mb-6 text-gray-500 text-center md:text-left">
             Please login to continue to your account.
           </p>
@@ -132,19 +140,23 @@ const Login: React.FC = () => {
             />
           )}
 
-          {/* Send/Resend OTP button */}
-          <button
-            type="button"
-            onClick={handleSendOtp}
-            disabled={!email || timer > 0 || loading}
-            className={`text-sm mb-4 ${
-              timer > 0
-                ? 'text-gray-400 cursor-not-allowed'
-                : 'text-blue-600 hover:underline'
-            }`}
-          >
-            {otpSent ? (timer > 0 ? `Resend OTP in ${timer}s` : 'Resend OTP') : 'Send OTP'}
-          </button>
+          {/* Resend OTP button */}
+          {otpSent && (
+            <div className="mb-4 text-sm text-gray-600">
+              {timer > 0 ? (
+                <span className="text-gray-400">Resend OTP in {timer}s</span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={loading}
+                  className="text-blue-600 hover:underline"
+                >
+                  Resend OTP
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Remember me & Submit */}
           <div className="flex items-center mb-4">
@@ -154,13 +166,18 @@ const Login: React.FC = () => {
             </label>
           </div>
 
-          <Button type="button" fullWidth={true} onClick={handleLogin} disabled={loading}>
-            Sign In
+          <Button
+            type="button"
+            fullWidth={true}
+            onClick={otpSent ? handleLogin : handleSendOtp}
+            disabled={loading || (otpSent && (!email || !otp))}
+          >
+            {loading ? "Processing..." : otpSent ? "Sign In" : "Send OTP"}
           </Button>
 
           {/* Create Account */}
           <p className="text-sm mt-4 text-center md:text-left">
-            Need an account?{' '}
+            Need an account?{" "}
             <Link to="/signup" className="text-blue-600 hover:underline">
               Create one
             </Link>
@@ -170,7 +187,11 @@ const Login: React.FC = () => {
 
       {/* Right side: image */}
       <div className="hidden md:flex w-1/2 h-screen">
-        <img src={bgImg} alt="background" className="object-cover w-full h-full" />
+        <img
+          src={bgImg}
+          alt="background"
+          className="object-cover w-full h-full"
+        />
       </div>
     </div>
   );
