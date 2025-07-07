@@ -30,14 +30,20 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 // rate limit
-app.use(rateLimit({
+const limiter = rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutes
-    max: 100,
-    message: "Too many attempts from this IP, please try again later.",
-    })); // Rate limiting
- 
- app.use(helmet());
- app.use(rateLimit({}))
+    max: 200,
+    handler: (req, res) => {
+        res.status(429).json({
+        success: false,
+        message: "Too many attempts from this IP, please try again later.",
+        });
+    },
+});
+      
+app.use(limiter);
+app.use(helmet());
+app.use(rateLimit({}))
 
 app.use(express.json());
 app.use(cookieParser())
