@@ -12,22 +12,21 @@ import noteRouter from '../src/routes/notes.route'
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
+let server: ReturnType<typeof app.listen>;
 
 // handling uncaught exception
-process.on("uncaughtException",(err:any)=>{
+process.on("uncaughtException", (err: any) => {
     console.log(`Error : ${err.message}`)
     console.log("Shutting down the server due to uncaught exception")
-
-    server.close(()=>{
-        process.exit(1);
-    })
-})
-
+    if (server) {
+      server.close(() => process.exit(1));
+    } else {
+      process.exit(1);
+    }
+  });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-connectDB();
 
 // rate limit
 const limiter = rateLimit({
@@ -76,16 +75,28 @@ app.use('/api/v1/notes', noteRouter);
 app.use(errorMiddleware)  // error middleware
 
 // server
-const server = app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+
+const startServer = async () => {
+    try {
+      await connectDB();
+      server = app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    } catch (err) {
+      console.error("MongoDB connection failed", err);
+      process.exit(1);
+    }
+  };
+  startServer();
 
 // handling unhandled promise rejection
 process.on("unhandledRejection",(err:any)=>{
     console.log(`Error : ${err.message}`)
     console.log("Shutting down the server due to unhandled Promise Rejection")
 
-    server.close(()=>{
+    if (server) {
+        server.close(() => process.exit(1));
+    } else {
         process.exit(1);
-    })
+    }
 })
