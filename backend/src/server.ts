@@ -31,19 +31,19 @@ connectDB();
 
 // rate limit
 const limiter = rateLimit({
-    windowMs: 5 * 60 * 1000, // 5 minutes
+    windowMs: 2 * 60 * 1000, // 2 minutes
     max: 200,
     handler: (req, res) => {
-        res.status(429).json({
+      res.status(429).json({
         success: false,
         message: "Too many attempts from this IP, please try again later.",
-        });
+      });
     },
-});
+    skip: (req) => req.method === "OPTIONS", // Skipped the CORS preflight in rate limiting
+  });
       
 app.use(limiter);
 app.use(helmet());
-app.use(rateLimit({}))
 
 app.use(express.json());
 app.use(cookieParser())
