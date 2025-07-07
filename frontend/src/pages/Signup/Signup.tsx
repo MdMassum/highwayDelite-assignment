@@ -66,9 +66,8 @@ const Signup: React.FC = () => {
       toast.error("Name, Email or Dob cannote be empty!!");
       return;
     }
-    setOtpSent(true);
-    setTimer(60); 
-
+     
+    setLoading(true);
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/request-otp/signup`, {
         name,
@@ -81,6 +80,8 @@ const Signup: React.FC = () => {
         return;
       }
       console.log("Otp Sent Success:", response.data);
+      setOtpSent(true);
+      setTimer(60);
       toast.success("Otp Sent Successfully");
 
     } catch (err:any) {

@@ -67,7 +67,7 @@ const Login: React.FC = () => {
       toast.error("Email cannot be empty!!");
       return;
     }
-
+    setLoading(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/auth/request-otp/login`,
