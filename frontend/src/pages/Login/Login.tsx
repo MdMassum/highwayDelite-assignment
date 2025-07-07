@@ -59,8 +59,8 @@ const Login: React.FC = () => {
   // send otp
   const handleSendOtp = async() => {
 
-    if(!email || !otp){
-      toast.error("Email or Otp cannote be empty!!");
+    if(!email){
+      toast.error("Email cannot be empty!!");
       return;
     }
     setOtpSent(true);
